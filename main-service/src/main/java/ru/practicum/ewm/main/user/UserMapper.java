@@ -1,6 +1,8 @@
 package ru.practicum.ewm.main.user;
 
 import lombok.experimental.UtilityClass;
+import ru.practicum.ewm.main.user.dto.UserDTO;
+import ru.practicum.ewm.main.user.dto.UserShortDTO;
 
 @UtilityClass
 public class UserMapper {
@@ -17,6 +19,13 @@ public class UserMapper {
                 .id(user.getId())
                 .name(user.getName())
                 .email(user.getEmail())
+                .build();
+    }
+
+    public UserShortDTO userToShortDTO(User user) {
+        return UserShortDTO.builder()
+                .id(user.getId())
+                .name(user.getName())
                 .build();
     }
 }

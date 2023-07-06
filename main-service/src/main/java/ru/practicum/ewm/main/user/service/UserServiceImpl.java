@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.main.Paginator;
 import ru.practicum.ewm.main.exceptions.UserNotFoundException;
 import ru.practicum.ewm.main.user.User;
-import ru.practicum.ewm.main.user.UserDTO;
+import ru.practicum.ewm.main.user.dto.UserDTO;
 import ru.practicum.ewm.main.user.UserMapper;
 import ru.practicum.ewm.main.user.UserRepository;
 

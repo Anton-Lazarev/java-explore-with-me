@@ -1,6 +1,6 @@
 package ru.practicum.ewm.main.user.service;
 
-import ru.practicum.ewm.main.user.UserDTO;
+import ru.practicum.ewm.main.user.dto.UserDTO;
 
 import java.util.List;
 

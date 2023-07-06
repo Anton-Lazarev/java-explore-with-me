@@ -1,4 +1,4 @@
-package ru.practicum.ewm.main;
+package ru.practicum.ewm.main.controllers;
 
 import ru.practicum.ewm.main.exceptions.PageValidationException;
 

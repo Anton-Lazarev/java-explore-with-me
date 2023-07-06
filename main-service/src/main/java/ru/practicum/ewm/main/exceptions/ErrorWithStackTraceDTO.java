@@ -8,9 +8,10 @@ import java.util.List;
 
 @Data
 @Builder
-public class ErrorDTO {
+public class ErrorWithStackTraceDTO {
     private final HttpStatus status;
     private final String reason;
     private final String message;
+    private final String timestamp;
     private final List<String> errors;
 }

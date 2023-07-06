@@ -8,9 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.main.Paginator;
 import ru.practicum.ewm.main.exceptions.UserNotFoundException;
 import ru.practicum.ewm.main.user.User;
-import ru.practicum.ewm.main.user.dto.UserDTO;
 import ru.practicum.ewm.main.user.UserMapper;
 import ru.practicum.ewm.main.user.UserRepository;
+import ru.practicum.ewm.main.user.dto.UserDTO;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserDTO addUser(UserDTO dto) {
         User newUser = repository.save(UserMapper.UserDtoToUser(dto));
-        log.info("Create user with ID: {}, and email: {}", newUser.getId(), newUser.getEmail());
+        log.info("Created user with ID: {}, and email: {}", newUser.getId(), newUser.getEmail());
         return UserMapper.userToUserDTO(newUser);
     }
 
@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
             dtos = repository.finAllByIDs(ids, pageable)
                     .stream().map(UserMapper::userToUserDTO).collect(Collectors.toList());
         }
-        log.info("Get list of users with size {}", dtos.size());
+        log.info("Got list of users with size {}", dtos.size());
         return dtos;
     }
 

@@ -1,17 +1,14 @@
-package ru.practicum.ewm.main.exceptions;
+package ru.practicum.ewm.main.exceptions.dto;
 
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
 
-import java.util.List;
-
 @Data
 @Builder
-public class ErrorWithStackTraceDTO {
+public class ShortErrorDTO {
     private final HttpStatus status;
     private final String reason;
     private final String message;
     private final String timestamp;
-    private final List<String> errors;
 }

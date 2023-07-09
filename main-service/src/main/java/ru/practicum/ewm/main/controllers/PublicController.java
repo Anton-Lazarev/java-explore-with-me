@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.ewm.main.category.CategoryDTO;
 import ru.practicum.ewm.main.category.service.CategoryService;
+import ru.practicum.ewm.main.event.dto.OutcomeEventFullDTO;
+import ru.practicum.ewm.main.event.service.EventService;
 
 import java.util.List;
 
@@ -18,6 +20,7 @@ import java.util.List;
 @Slf4j
 public class PublicController {
     private final CategoryService categoryService;
+    private final EventService eventService;
 
     @GetMapping("/categories")
     public List<CategoryDTO> findCategories(@RequestParam(defaultValue = "0") int from,
@@ -31,5 +34,13 @@ public class PublicController {
     public CategoryDTO findCategoryByID(@PathVariable long catID) {
         log.info("EWM main service: GET to /categories/{}", catID);
         return categoryService.getCategoryByID(catID);
+    }
+
+    @GetMapping("/events/{eventID}")
+    public OutcomeEventFullDTO findEventByID(@PathVariable long eventID) {
+        log.info("EWM main service: GET to /events/{}", eventID);
+        OutcomeEventFullDTO dto = eventService.getPublicEventByID(eventID);
+        //todo реализовать отправку статистики по запрашиваемому URI
+        return dto;
     }
 }

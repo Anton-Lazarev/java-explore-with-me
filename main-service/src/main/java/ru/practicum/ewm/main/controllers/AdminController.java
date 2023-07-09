@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.ewm.main.category.CategoryDTO;
 import ru.practicum.ewm.main.category.service.CategoryService;
+import ru.practicum.ewm.main.event.dto.IncomePatchEventDTO;
+import ru.practicum.ewm.main.event.dto.OutcomeEventFullDTO;
+import ru.practicum.ewm.main.event.service.EventService;
 import ru.practicum.ewm.main.user.dto.UserDTO;
 import ru.practicum.ewm.main.user.service.UserService;
 
@@ -28,6 +31,7 @@ import java.util.List;
 public class AdminController {
     private final UserService userService;
     private final CategoryService categoryService;
+    private final EventService eventService;
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/users")
@@ -72,5 +76,12 @@ public class AdminController {
     public void deleteCategory(@PathVariable long catID) {
         log.info("EWM main service: DELETE to /admin/categories/{}", catID);
         categoryService.deleteCategoryByID(catID);
+    }
+
+    @PatchMapping("/events/{eventID}")
+    public OutcomeEventFullDTO patchEvent(@PathVariable long eventID,
+                                          @Valid @RequestBody IncomePatchEventDTO dto) {
+        log.info("EWM main service: PATCH to /admin/events/{} with {}", eventID, dto.toString());
+        return eventService.patchEventByAdmin(eventID, dto);
     }
 }

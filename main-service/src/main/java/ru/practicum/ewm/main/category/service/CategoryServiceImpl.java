@@ -18,11 +18,11 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @AllArgsConstructor
+@Transactional
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository repository;
 
     @Override
-    @Transactional
     public CategoryDTO addCategory(CategoryDTO dto) {
         Category newCategory = repository.save(CategoryMapper.categoryDtoToCategory(dto));
         log.info("Create new category with ID: {}, name: {}", newCategory.getId(), newCategory.getName());
@@ -30,7 +30,6 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    @Transactional
     public CategoryDTO patchCategory(CategoryDTO dto) {
         Category patchedCategory = repository.save(CategoryMapper.categoryDtoToCategory(dto));
         log.info("Patched category with ID: {}, new name: {}", patchedCategory.getId(), patchedCategory.getName());
@@ -38,7 +37,6 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    @Transactional
     public void deleteCategoryByID(long id) {
         if (!repository.existsById(id)) {
             throw new CategoryNotFoundException("Category with ID " + id + " not presented");

@@ -28,7 +28,7 @@ public class IncomeCreateEventDTO {
     @Size(min = 20, max = 7000, message = "Size of description should be between 20 and 7000")
     private String description;
     @NotNull(message = "Event date can't be null")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
     @NotNull(message = "Event location can't be null")
     private Location location;

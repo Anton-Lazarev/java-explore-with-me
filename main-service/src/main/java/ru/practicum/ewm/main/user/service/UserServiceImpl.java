@@ -18,11 +18,11 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @AllArgsConstructor
+@Transactional
 public class UserServiceImpl implements UserService {
     private final UserRepository repository;
 
     @Override
-    @Transactional
     public UserDTO addUser(UserDTO dto) {
         User newUser = repository.save(UserMapper.UserDtoToUser(dto));
         log.info("Created user with ID: {}, and email: {}", newUser.getId(), newUser.getEmail());
@@ -46,7 +46,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
     public void deleteUserByID(long id) {
         if (!repository.existsById(id)) {
             throw new UserNotFoundException("User with ID " + id + " not presented");

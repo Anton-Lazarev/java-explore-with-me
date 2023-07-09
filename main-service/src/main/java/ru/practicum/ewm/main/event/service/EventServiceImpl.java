@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.main.Paginator;
 import ru.practicum.ewm.main.category.Category;
 import ru.practicum.ewm.main.category.CategoryRepository;
-import ru.practicum.ewm.main.event.ConflictStatusException;
+import ru.practicum.ewm.main.exceptions.ConflictStatusException;
 import ru.practicum.ewm.main.event.Event;
 import ru.practicum.ewm.main.event.EventMapper;
 import ru.practicum.ewm.main.event.EventRepository;
@@ -30,7 +30,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j

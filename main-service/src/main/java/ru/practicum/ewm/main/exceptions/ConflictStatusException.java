@@ -1,4 +1,4 @@
-package ru.practicum.ewm.main.event;
+package ru.practicum.ewm.main.exceptions;
 
 public class ConflictStatusException extends RuntimeException {
     public ConflictStatusException(String message) {

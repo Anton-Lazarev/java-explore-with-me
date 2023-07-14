@@ -22,7 +22,6 @@ import ru.practicum.ewm.main.compilations.dto.OutcomeCompilationDTO;
 import ru.practicum.ewm.main.compilations.service.CompilationService;
 import ru.practicum.ewm.main.event.dto.IncomePatchEventDTO;
 import ru.practicum.ewm.main.event.dto.OutcomeEventFullDTO;
-import ru.practicum.ewm.main.event.dto.OutcomeEventShortDTO;
 import ru.practicum.ewm.main.event.service.EventService;
 import ru.practicum.ewm.main.user.dto.UserDTO;
 import ru.practicum.ewm.main.user.service.UserService;
@@ -95,12 +94,12 @@ public class AdminController {
 
     @GetMapping("/events")
     public List<OutcomeEventFullDTO> searchEvents(@RequestParam(required = false) List<Long> users,
-                                                   @RequestParam(required = false) List<String> states,
-                                                   @RequestParam(required = false) List<Long> categories,
-                                                   @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
-                                                   @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
-                                                   @RequestParam(defaultValue = "0") int from,
-                                                   @RequestParam(defaultValue = "10") int size) {
+                                                  @RequestParam(required = false) List<String> states,
+                                                  @RequestParam(required = false) List<Long> categories,
+                                                  @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
+                                                  @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
+                                                  @RequestParam(defaultValue = "0") int from,
+                                                  @RequestParam(defaultValue = "10") int size) {
         log.info("EWM main service: GET to /admin/events/ with users: {}, states: {}, categories: {}, rangeStart: {}, rangeEnd: {}, " +
                 "from: {}, size: {}", users, states, categories, rangeStart, rangeEnd, from, size);
         PageValidator.validate(from, size);

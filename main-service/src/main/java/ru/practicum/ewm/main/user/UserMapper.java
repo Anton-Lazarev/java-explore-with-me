@@ -6,7 +6,7 @@ import ru.practicum.ewm.main.user.dto.UserShortDTO;
 
 @UtilityClass
 public class UserMapper {
-    public User UserDtoToUser(UserDTO dto) {
+    public User userDtoToUser(UserDTO dto) {
         return User.builder()
                 .id(dto.getId())
                 .name(dto.getName())

@@ -24,7 +24,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO addUser(UserDTO dto) {
-        User newUser = repository.save(UserMapper.UserDtoToUser(dto));
+        User newUser = repository.save(UserMapper.userDtoToUser(dto));
         log.info("Created user with ID: {}, and email: {}", newUser.getId(), newUser.getEmail());
         return UserMapper.userToUserDTO(newUser);
     }

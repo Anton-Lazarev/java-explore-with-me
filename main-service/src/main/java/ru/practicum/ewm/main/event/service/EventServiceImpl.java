@@ -2,15 +2,17 @@ package ru.practicum.ewm.main.event.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.main.Paginator;
+import ru.practicum.ewm.main.StatisticForEvents;
 import ru.practicum.ewm.main.category.Category;
 import ru.practicum.ewm.main.category.CategoryRepository;
-import ru.practicum.ewm.main.exceptions.ConflictStatusException;
 import ru.practicum.ewm.main.event.Event;
 import ru.practicum.ewm.main.event.EventMapper;
 import ru.practicum.ewm.main.event.EventRepository;
+import ru.practicum.ewm.main.event.dto.EventSort;
 import ru.practicum.ewm.main.event.dto.EventStatus;
 import ru.practicum.ewm.main.event.dto.EventStatusActions;
 import ru.practicum.ewm.main.event.dto.IncomeCreateEventDTO;
@@ -18,10 +20,13 @@ import ru.practicum.ewm.main.event.dto.IncomePatchEventDTO;
 import ru.practicum.ewm.main.event.dto.OutcomeEventFullDTO;
 import ru.practicum.ewm.main.event.dto.OutcomeEventShortDTO;
 import ru.practicum.ewm.main.exceptions.CategoryNotFoundException;
+import ru.practicum.ewm.main.exceptions.ConflictStatusException;
 import ru.practicum.ewm.main.exceptions.EventDateException;
 import ru.practicum.ewm.main.exceptions.EventNotFoundException;
 import ru.practicum.ewm.main.exceptions.IncorrectOwnerOfEventException;
 import ru.practicum.ewm.main.exceptions.UserNotFoundException;
+import ru.practicum.ewm.main.requests.EventRequestRepository;
+import ru.practicum.ewm.main.requests.dto.EventRequestStatus;
 import ru.practicum.ewm.main.user.User;
 import ru.practicum.ewm.main.user.UserRepository;
 
@@ -29,7 +34,9 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -39,6 +46,8 @@ public class EventServiceImpl implements EventService {
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final EventRepository eventRepository;
+    private final EventRequestRepository requestRepository;
+    private final StatisticForEvents statsForEvents;
 
     @Override
     public OutcomeEventFullDTO addEvent(long userID, IncomeCreateEventDTO dto) {
@@ -91,9 +100,10 @@ public class EventServiceImpl implements EventService {
             event.get().setState(EventStatus.PENDING);
         }
         eventRepository.save(event.get());
+        long confirmedRequests = requestRepository.countAllByEventIdAndStatus(eventID, EventRequestStatus.CONFIRMED);
+        long hits = statsForEvents.getHitsForEvents(List.of(eventID)).get(eventID);
         log.info("Initiator update event with ID {} patched and got status {}", eventID, event.get().getState().name());
-        //todo реализовать сборку FullEventDTO с views и requests и убрать 0-0
-        return EventMapper.eventToFullEventDTO(event.get(), 0, 0);
+        return EventMapper.eventToFullEventDTO(event.get(), confirmedRequests, hits);
     }
 
     @Override
@@ -117,9 +127,10 @@ public class EventServiceImpl implements EventService {
             event.get().setState(EventStatus.CANCELED);
         }
         eventRepository.save(event.get());
+        long confirmedRequests = requestRepository.countAllByEventIdAndStatus(eventID, EventRequestStatus.CONFIRMED);
+        long hits = statsForEvents.getHitsForEvents(List.of(eventID)).get(eventID);
         log.info("Admin update event with ID {} patched and got status {}", eventID, event.get().getState().name());
-        //todo реализовать сборку FullEventDTO с views и requests и убрать 0-0
-        return EventMapper.eventToFullEventDTO(event.get(), 0, 0);
+        return EventMapper.eventToFullEventDTO(event.get(), confirmedRequests, hits);
     }
 
     @Override
@@ -132,10 +143,10 @@ public class EventServiceImpl implements EventService {
         if (event.get().getState() != EventStatus.PUBLISHED) {
             throw new EventNotFoundException("Event with ID " + eventID + " not in status PUBLISHED");
         }
+        long confirmedRequests = requestRepository.countAllByEventIdAndStatus(eventID, EventRequestStatus.CONFIRMED);
+        long hits = statsForEvents.getHitsForEvents(List.of(eventID)).get(eventID);
         log.info("Got event with ID: {}, and title: {}", event.get().getId(), event.get().getTitle());
-        //todo реализовать отправку статистики в клиент по эндпоинту
-        //todo реализовать сборку FullEventDTO с views и requests и убрать 0-0
-        return EventMapper.eventToFullEventDTO(event.get(), 0, 0);
+        return EventMapper.eventToFullEventDTO(event.get(), confirmedRequests, hits);
     }
 
     @Override
@@ -152,9 +163,10 @@ public class EventServiceImpl implements EventService {
         if (event.get().getInitiator().getId() != user.get().getId()) {
             throw new IncorrectOwnerOfEventException("User with ID " + userID + " not owner of event with ID " + eventID);
         }
+        long confirmedRequests = requestRepository.countAllByEventIdAndStatus(eventID, EventRequestStatus.CONFIRMED);
+        long hits = statsForEvents.getHitsForEvents(List.of(eventID)).get(eventID);
         log.info("Initiator got event with ID: {}, and title: {}", event.get().getId(), event.get().getTitle());
-        //todo реализовать сборку FullEventDTO с views и requests и убрать 0-0
-        return EventMapper.eventToFullEventDTO(event.get(), 0, 0);
+        return EventMapper.eventToFullEventDTO(event.get(), confirmedRequests, hits);
     }
 
     @Override
@@ -163,12 +175,102 @@ public class EventServiceImpl implements EventService {
         if (!userRepository.existsById(userID)) {
             throw new UserNotFoundException("User with ID " + userID + " not presented");
         }
-        List<OutcomeEventShortDTO> dtos = new ArrayList<>();
-        for (Event event : eventRepository.findAllByInitiatorId(userID, new Paginator(from, size))) {
-            //todo реализовать сборку ShortEventDTO с views и requests и убрать 0-0
-            dtos.add(EventMapper.eventToShortEventDTO(event, 0, 0));
-        }
+        List<Event> pageOfEvents = eventRepository.findAllByInitiatorId(userID, new Paginator(from, size));
+        List<OutcomeEventShortDTO> dtos = collectEventsToShortDTO(pageOfEvents);
         log.info("Getting list of events with size {} by their initiator with ID {}", dtos.size(), userID);
+        return dtos;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<OutcomeEventShortDTO> publicEventSearch(
+            String text, List<Integer> categories, boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd,
+            boolean onlyAvailable, EventSort sort, int from, int size) {
+        Specification<Event> specification = Specification.where(null);
+        if (text != null) {
+            specification = specification.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.or(
+                            criteriaBuilder.like(criteriaBuilder.lower(root.get("annotation")), "%" + text.toLowerCase() + "%"),
+                            criteriaBuilder.like(criteriaBuilder.lower(root.get("description")), "%" + text.toLowerCase() + "%")
+                    ));
+        }
+
+        if (categories != null && !categories.isEmpty()) {
+            specification = specification.and((root, query, criteriaBuilder) -> root.get("category").get("id").in(categories));
+        }
+
+        if (paid) {
+            specification = specification.and((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("paid"), true));
+        }
+
+        if (rangeStart != null) {
+            specification = specification.and((root, query, criteriaBuilder) -> criteriaBuilder.greaterThan(root.get("eventDate"), rangeStart));
+        } else {
+            specification = specification.and((root, query, criteriaBuilder) -> criteriaBuilder.greaterThan(root.get("eventDate"), LocalDateTime.now()));
+        }
+
+        if (rangeEnd != null) {
+            specification = specification.and((root, query, criteriaBuilder) -> criteriaBuilder.lessThan(root.get("eventDate"), rangeEnd));
+        }
+
+        if (onlyAvailable) {
+            specification = specification.and((root, query, criteriaBuilder) -> criteriaBuilder.greaterThanOrEqualTo(root.get("membersLimit"), 0));
+        }
+        specification = specification.and((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("state"), EventStatus.PUBLISHED));
+
+        List<Event> pageOfEvents = eventRepository.findAll(specification, new Paginator(from, size));
+        List<OutcomeEventShortDTO> dtos = collectEventsToShortDTO(pageOfEvents);
+        log.info("Getting list of events with size {} for PUBLIC search", dtos.size());
+        return dtos;
+    }
+
+    public List<OutcomeEventFullDTO> adminEventSearch(
+            List<Long> users, List<String> states, List<Long> categories, LocalDateTime rangeStart,
+            LocalDateTime rangeEnd, int from, int size) {
+        Specification<Event> specification = Specification.where(null);
+
+        if (users != null && !users.isEmpty()) {
+            specification = specification.and((root, query, criteriaBuilder) -> root.get("initiator").get("id").in(users));
+        }
+
+        if (states != null && !states.isEmpty()) {
+            specification = specification.and((root, query, criteriaBuilder) -> root.get("state").as(String.class).in(states));
+        }
+
+        if (categories != null && !categories.isEmpty()) {
+            specification = specification.and((root, query, criteriaBuilder) -> root.get("category").get("id").in(categories));
+        }
+
+        if (rangeStart != null) {
+            specification = specification.and((root, query, criteriaBuilder) -> criteriaBuilder.greaterThan(root.get("eventDate"), rangeStart));
+        }
+
+        if (rangeEnd != null) {
+            specification = specification.and((root, query, criteriaBuilder) -> criteriaBuilder.lessThan(root.get("eventDate"), rangeEnd));
+        }
+        List<Event> pageOfEvents = eventRepository.findAll(specification, new Paginator(from, size));
+
+        List<Long> eventIDs = pageOfEvents.stream().map(Event::getId).collect(Collectors.toList());
+        Map<Long, Long> eventIdsWithHits = statsForEvents.getHitsForEvents(eventIDs);
+        List<OutcomeEventFullDTO> dtos = new ArrayList<>();
+        for (Event event : pageOfEvents) {
+            dtos.add(EventMapper.eventToFullEventDTO(event,
+                    requestRepository.countAllByEventIdAndStatus(event.getId(), EventRequestStatus.CONFIRMED),
+                    eventIdsWithHits.get(event.getId())));
+        }
+        log.info("Getting list of events with size {} for ADMIN search", dtos.size());
+        return dtos;
+    }
+
+    private List<OutcomeEventShortDTO> collectEventsToShortDTO(List<Event> events) {
+        List<OutcomeEventShortDTO> dtos = new ArrayList<>();
+        List<Long> eventIDs = events.stream().map(Event::getId).collect(Collectors.toList());
+        Map<Long, Long> eventIdsWithHits = statsForEvents.getHitsForEvents(eventIDs);
+        for (Event event : events) {
+            dtos.add(EventMapper.eventToShortEventDTO(event,
+                    requestRepository.countAllByEventIdAndStatus(event.getId(), EventRequestStatus.CONFIRMED),
+                    eventIdsWithHits.get(event.getId())));
+        }
         return dtos;
     }
 

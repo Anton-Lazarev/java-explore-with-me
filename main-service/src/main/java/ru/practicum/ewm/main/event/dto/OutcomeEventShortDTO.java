@@ -23,6 +23,6 @@ public class OutcomeEventShortDTO {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
     private boolean paid;
-    private int confirmedRequests;
-    private int views;
+    private long confirmedRequests;
+    private long views;
 }

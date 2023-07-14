@@ -27,11 +27,11 @@ public class OutcomeEventFullDTO {
     private boolean paid;
     private int participantLimit;
     private boolean requestModeration;
-    private int confirmedRequests;
+    private long confirmedRequests;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdOn;
     private String state;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime publishedOn;
-    private int views;
+    private long views;
 }

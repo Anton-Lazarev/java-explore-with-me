@@ -49,7 +49,7 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler({UserNotFoundException.class, CategoryNotFoundException.class, EventNotFoundException.class,
-            EventRequestNotFoundException.class})
+            EventRequestNotFoundException.class, CompilationNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ShortErrorDTO handleNotFoundException(Exception exception) {
         log.error("Data not found error: {}", exception.getMessage());

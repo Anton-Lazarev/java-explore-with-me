@@ -28,7 +28,7 @@ public class EventMapper {
                 .build();
     }
 
-    public OutcomeEventFullDTO eventToFullEventDTO(Event event, int confirmedRequests, int views) {
+    public OutcomeEventFullDTO eventToFullEventDTO(Event event, long confirmedRequests, long views) {
         return OutcomeEventFullDTO.builder()
                 .id(event.getId())
                 .title(event.getTitle())
@@ -49,7 +49,7 @@ public class EventMapper {
                 .build();
     }
 
-    public OutcomeEventShortDTO eventToShortEventDTO(Event event, int confirmedRequests, int views) {
+    public OutcomeEventShortDTO eventToShortEventDTO(Event event, long confirmedRequests, long views) {
         return OutcomeEventShortDTO.builder()
                 .id(event.getId())
                 .title(event.getTitle())

@@ -35,13 +35,14 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @AllArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class EventRequestServiceImpl implements EventRequestService {
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
     private final EventRequestRepository requestRepository;
 
     @Override
+    @Transactional
     public EventRequestDTO addEventRequest(long userID, long eventID) {
         Optional<User> user = userRepository.findById(userID);
         Optional<Event> event = eventRepository.findById(eventID);
@@ -77,6 +78,7 @@ public class EventRequestServiceImpl implements EventRequestService {
     }
 
     @Override
+    @Transactional
     public EventRequestDTO cancelRequestByRequester(long userID, long reqID) {
         Optional<User> user = userRepository.findById(userID);
         Optional<EventRequest> request = requestRepository.findById(reqID);
@@ -96,7 +98,6 @@ public class EventRequestServiceImpl implements EventRequestService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<EventRequestDTO> getAllRequestsOfRequester(long userID) {
         if (!userRepository.existsById(userID)) {
             throw new UserNotFoundException("User with ID " + userID + " not presented");
@@ -108,7 +109,6 @@ public class EventRequestServiceImpl implements EventRequestService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<EventRequestDTO> getAllRequestsToEventByEventInitiator(long userID, long eventID) {
         Optional<User> user = userRepository.findById(userID);
         Optional<Event> event = eventRepository.findById(eventID);
@@ -121,6 +121,7 @@ public class EventRequestServiceImpl implements EventRequestService {
     }
 
     @Override
+    @Transactional
     public OutcomeGroupedRequestsDTO changeStatusOfRequestsByEventInitiator(long userID, long eventID, ChangeStatusRequestsDTO dto) {
         Optional<User> user = userRepository.findById(userID);
         Optional<Event> event = eventRepository.findById(eventID);

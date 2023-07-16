@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @AllArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class CompilationServiceImpl implements CompilationService {
     private final EventRepository eventRepository;
     private final CompilationRepository compilationRepository;
@@ -38,6 +38,7 @@ public class CompilationServiceImpl implements CompilationService {
     private final StatisticForEvents statsForEvents;
 
     @Override
+    @Transactional
     public OutcomeCompilationDTO addCompilation(IncomeCompilationDTO dto) {
         Compilation newCompilation = CompilationMapper.incomeDtoToCompilation(dto);
         if (dto.getPinned() == null) {
@@ -56,6 +57,7 @@ public class CompilationServiceImpl implements CompilationService {
     }
 
     @Override
+    @Transactional
     public OutcomeCompilationDTO updateCompilation(long compID, IncomePatchCompilationDTO dto) {
         Optional<Compilation> compilation = compilationRepository.findById(compID);
         if (compilation.isEmpty()) {
@@ -76,6 +78,7 @@ public class CompilationServiceImpl implements CompilationService {
     }
 
     @Override
+    @Transactional
     public void deleteCompilationByID(long compID) {
         if (!compilationRepository.existsById(compID)) {
             throw new CompilationNotFoundException("Compilation with ID " + compID + " not presented");
@@ -85,7 +88,6 @@ public class CompilationServiceImpl implements CompilationService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<OutcomeCompilationDTO> getCompilations(boolean pinned, int from, int size) {
         List<Compilation> compilations;
         if (pinned) {
@@ -103,7 +105,6 @@ public class CompilationServiceImpl implements CompilationService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public OutcomeCompilationDTO getCompilationByID(long compID) {
         Optional<Compilation> compilation = compilationRepository.findById(compID);
         if (compilation.isEmpty()) {

@@ -40,6 +40,9 @@ public class Event {
     private String annotation;
     private String description;
     private boolean paid;
+    private int membersLimit;
+    private boolean requestModeration;
+    private LocalDateTime publicationDate;
 
     @Column(name = "start_date")
     private LocalDateTime eventDate;
@@ -54,12 +57,6 @@ public class Event {
     @ToString.Exclude
     private Category category;
 
-    @Column(name = "members_limit")
-    private int membersLimit;
-
-    @Column(name = "request_moderation")
-    private boolean requestModeration;
-
     @Column(name = "location_lat")
     private float latitude;
 
@@ -71,7 +68,4 @@ public class Event {
 
     @Column(name = "created")
     private LocalDateTime createDate;
-
-    @Column(name = "publication_date")
-    private LocalDateTime publicationDate;
 }

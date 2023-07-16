@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @AllArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class EventServiceImpl implements EventService {
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
@@ -50,6 +50,7 @@ public class EventServiceImpl implements EventService {
     private final StatisticForEvents statsForEvents;
 
     @Override
+    @Transactional
     public OutcomeEventFullDTO addEvent(long userID, IncomeCreateEventDTO dto) {
         Optional<User> initiator = userRepository.findById(userID);
         Optional<Category> category = categoryRepository.findById(dto.getCategory());
@@ -74,6 +75,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public OutcomeEventFullDTO patchEventByInitiator(long userID, long eventID, IncomePatchEventDTO dto) {
         Optional<User> user = userRepository.findById(userID);
         Optional<Event> event = eventRepository.findById(eventID);
@@ -107,6 +109,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public OutcomeEventFullDTO patchEventByAdmin(long eventID, IncomePatchEventDTO dto) {
         Optional<Event> event = eventRepository.findById(eventID);
         if (event.isEmpty()) {
@@ -134,7 +137,6 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public OutcomeEventFullDTO getPublicEventByID(long eventID) {
         Optional<Event> event = eventRepository.findById(eventID);
         if (event.isEmpty()) {
@@ -150,7 +152,6 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public OutcomeEventFullDTO getEventOfInitiatorByID(long userID, long eventID) {
         Optional<Event> event = eventRepository.findById(eventID);
         Optional<User> user = userRepository.findById(userID);
@@ -170,7 +171,6 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<OutcomeEventShortDTO> getEventsOfInitiator(long userID, int from, int size) {
         if (!userRepository.existsById(userID)) {
             throw new UserNotFoundException("User with ID " + userID + " not presented");
@@ -182,7 +182,6 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<OutcomeEventShortDTO> publicEventSearch(
             String text, List<Integer> categories, boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd,
             boolean onlyAvailable, EventSort sort, int from, int size) {

@@ -18,11 +18,12 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @AllArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
     private final UserRepository repository;
 
     @Override
+    @Transactional
     public UserDTO addUser(UserDTO dto) {
         User newUser = repository.save(UserMapper.userDtoToUser(dto));
         log.info("Created user with ID: {}, and email: {}", newUser.getId(), newUser.getEmail());
@@ -30,7 +31,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<UserDTO> getPageOfUsers(List<Long> ids, int from, int size) {
         List<UserDTO> dtos;
         Pageable pageable = new Paginator(from, size);
@@ -46,6 +46,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void deleteUserByID(long id) {
         if (!repository.existsById(id)) {
             throw new UserNotFoundException("User with ID " + id + " not presented");

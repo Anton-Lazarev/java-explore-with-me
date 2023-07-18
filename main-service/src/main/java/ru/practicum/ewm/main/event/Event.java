@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import ru.practicum.ewm.main.category.Category;
-import ru.practicum.ewm.main.event.dto.EventStatus;
+import ru.practicum.ewm.main.event.dto.enums.EventStatus;
 import ru.practicum.ewm.main.user.User;
 
 import javax.persistence.Column;

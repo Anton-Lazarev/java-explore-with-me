@@ -34,4 +34,6 @@ public class OutcomeEventFullDTO {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime publishedOn;
     private long views;
+    private long likes;
+    private long dislikes;
 }

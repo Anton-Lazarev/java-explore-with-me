@@ -1,0 +1,911 @@
+{
+	"info": {
+		"_postman_id": "364cf475-d070-46d9-8ac9-31bd21306cc6",
+		"name": "Phase 3: Explore With Me - Feature",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18443711"
+	},
+	"item": [
+		{
+			"name": "Добавление лайка с некорректным пользователем",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен содержать код 404 и данные в формате JSON\", function(){\r",
+							"    pm.response.to.be.notFound;\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/users/:userID/likes?eventId=1",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"users",
+						":userID",
+						"likes"
+					],
+					"query": [
+						{
+							"key": "eventId",
+							"value": "1"
+						}
+					],
+					"variable": [
+						{
+							"key": "userID",
+							"value": "9999"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Добавление лайка с некорректным событием",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен содержать код 404 и данные в формате JSON\", function(){\r",
+							"    pm.response.to.be.notFound;\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/users/:userID/likes?eventId=9999",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"users",
+						":userID",
+						"likes"
+					],
+					"query": [
+						{
+							"key": "eventId",
+							"value": "9999"
+						}
+					],
+					"variable": [
+						{
+							"key": "userID",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Добавление лайка инициатором события",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен содержать код 409 и данные в формате JSON\", function(){\r",
+							"    pm.response.to.have.status(409);\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/users/:userID/likes?eventId=1",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"users",
+						":userID",
+						"likes"
+					],
+					"query": [
+						{
+							"key": "eventId",
+							"value": "1"
+						}
+					],
+					"variable": [
+						{
+							"key": "userID",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Добавление лайка пользователем, который не участвовал в событии",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен содержать код 409 и данные в формате JSON\", function(){\r",
+							"    pm.response.to.have.status(409);\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/users/:userID/likes?eventId=1",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"users",
+						":userID",
+						"likes"
+					],
+					"query": [
+						{
+							"key": "eventId",
+							"value": "1"
+						}
+					],
+					"variable": [
+						{
+							"key": "userID",
+							"value": "3"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Корректное добавление лайка с isLike = true по умолчанию",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен содержать код 201 и данные в формате JSON\", function(){\r",
+							"    pm.response.to.have.status(201);\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Лайк должен содержать поля: id, userID, eventID, isLike, created\", function () {\r",
+							"    var target = pm.response.json();\r",
+							"\r",
+							"    pm.expect(target).to.have.property('id');\r",
+							"    pm.expect(target).to.have.property('userID');\r",
+							"    pm.expect(target).to.have.property('eventID');\r",
+							"    pm.expect(target).to.have.property('like');\r",
+							"    pm.expect(target).to.have.property('created');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Данные в ответе должны соответствовать созданному лайку\", function () {\r",
+							"    var target = pm.response.json();\r",
+							"\r",
+							"    pm.expect(target.id).to.eql(1);\r",
+							"    pm.expect(target.userID).to.eql(2);\r",
+							"    pm.expect(target.eventID).to.equal(1);\r",
+							"    pm.expect(target.like).to.equal(true);\r",
+							"    pm.expect(target.created).to.not.be.null;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/users/:userID/likes?eventId=1",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"users",
+						":userID",
+						"likes"
+					],
+					"query": [
+						{
+							"key": "eventId",
+							"value": "1"
+						}
+					],
+					"variable": [
+						{
+							"key": "userID",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Повторное добавление лайка",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен содержать код 409 и данные в формате JSON\", function(){\r",
+							"    pm.response.to.have.status(409);\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/users/:userID/likes?eventId=1",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"users",
+						":userID",
+						"likes"
+					],
+					"query": [
+						{
+							"key": "eventId",
+							"value": "1"
+						}
+					],
+					"variable": [
+						{
+							"key": "userID",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Проверка полей события после добавления лайка",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен содержать код 200 и данные в формате JSON\", function(){\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Событие должно содержать новые поля: likes, dislikes\", function () {\r",
+							"    var target = pm.response.json();\r",
+							"\r",
+							"    pm.expect(target).to.have.property('likes');\r",
+							"    pm.expect(target).to.have.property('dislikes');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Данные в полях должны соответствовать событию и добавленному лайку\", function () {\r",
+							"    var target = pm.response.json();\r",
+							"\r",
+							"    pm.expect(target.id).to.eql(1);\r",
+							"    pm.expect(target.title).to.eql(\"title for first event\");\r",
+							"    pm.expect(target.likes).to.eql(1);\r",
+							"    pm.expect(target.dislikes).to.eql(0);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/events/:eventID",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"events",
+						":eventID"
+					],
+					"variable": [
+						{
+							"key": "eventID",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Запрос одного пользователя с некорректным ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен содержать код 404 и данные в формате JSON\", function(){\r",
+							"    pm.response.to.be.notFound;\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/events/:eventID",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"events",
+						":eventID"
+					],
+					"variable": [
+						{
+							"key": "eventID",
+							"value": "999"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Проверка полей инициатора события после добавления лайка",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен содержать код 200 и данные в формате JSON\", function(){\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Инициатор должен содержать новые поля: likes, dislikes\", function () {\r",
+							"    var target = pm.response.json();\r",
+							"\r",
+							"    pm.expect(target).to.have.property('likes');\r",
+							"    pm.expect(target).to.have.property('dislikes');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Данные в полях должны соответствовать событию и добавленному лайку\", function () {\r",
+							"    var target = pm.response.json();\r",
+							"\r",
+							"    pm.expect(target.id).to.eql(1);\r",
+							"    pm.expect(target.email).to.eql(\"first@user.er\");\r",
+							"    pm.expect(target.likes).to.eql(1);\r",
+							"    pm.expect(target.dislikes).to.eql(0);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/admin/users/:userID",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"admin",
+						"users",
+						":userID"
+					],
+					"variable": [
+						{
+							"key": "userID",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Удаление лайка с некорректным пользователем",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен содержать код 404 и данные в формате JSON\", function(){\r",
+							"    pm.response.to.be.notFound;\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/users/:userID/likes?eventId=1",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"users",
+						":userID",
+						"likes"
+					],
+					"query": [
+						{
+							"key": "eventId",
+							"value": "1"
+						}
+					],
+					"variable": [
+						{
+							"key": "userID",
+							"value": "999"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Удаление лайка с некорректным событием",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен содержать код 404 и данные в формате JSON\", function(){\r",
+							"    pm.response.to.be.notFound;\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/users/:userID/likes?eventId=999",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"users",
+						":userID",
+						"likes"
+					],
+					"query": [
+						{
+							"key": "eventId",
+							"value": "999"
+						}
+					],
+					"variable": [
+						{
+							"key": "userID",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Корректное удаление лайка",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен содержать код 204 и данные в формате JSON\", function(){\r",
+							"    pm.response.to.have.status(204);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/users/:userID/likes?eventId=1",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"users",
+						":userID",
+						"likes"
+					],
+					"query": [
+						{
+							"key": "eventId",
+							"value": "1"
+						}
+					],
+					"variable": [
+						{
+							"key": "userID",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Проверка полей события после удаления лайка",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен содержать код 200 и данные в формате JSON\", function(){\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Событие должно содержать новые поля: likes, dislikes\", function () {\r",
+							"    var target = pm.response.json();\r",
+							"\r",
+							"    pm.expect(target).to.have.property('likes');\r",
+							"    pm.expect(target).to.have.property('dislikes');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Данные в полях должны соответствовать событию и удалённому лайку\", function () {\r",
+							"    var target = pm.response.json();\r",
+							"\r",
+							"    pm.expect(target.id).to.eql(1);\r",
+							"    pm.expect(target.title).to.eql(\"title for first event\");\r",
+							"    pm.expect(target.likes).to.eql(0);\r",
+							"    pm.expect(target.dislikes).to.eql(0);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/events/:eventID",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"events",
+						":eventID"
+					],
+					"variable": [
+						{
+							"key": "eventID",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Проверка полей инициатора события после удаления лайка",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен содержать код 200 и данные в формате JSON\", function(){\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Инициатор должен содержать новые поля: likes, dislikes\", function () {\r",
+							"    var target = pm.response.json();\r",
+							"\r",
+							"    pm.expect(target).to.have.property('likes');\r",
+							"    pm.expect(target).to.have.property('dislikes');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Данные в полях должны соответствовать событию и добавленному лайку\", function () {\r",
+							"    var target = pm.response.json();\r",
+							"\r",
+							"    pm.expect(target.id).to.eql(1);\r",
+							"    pm.expect(target.email).to.eql(\"first@user.er\");\r",
+							"    pm.expect(target.likes).to.eql(0);\r",
+							"    pm.expect(target.dislikes).to.eql(0);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/admin/users/:userID",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"admin",
+						"users",
+						":userID"
+					],
+					"variable": [
+						{
+							"key": "userID",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Корректное добавление дизлайка",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен содержать код 201 и данные в формате JSON\", function(){\r",
+							"    pm.response.to.have.status(201);\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Лайк должен содержать поля: id, userID, eventID, isLike, created\", function () {\r",
+							"    var target = pm.response.json();\r",
+							"\r",
+							"    pm.expect(target).to.have.property('id');\r",
+							"    pm.expect(target).to.have.property('userID');\r",
+							"    pm.expect(target).to.have.property('eventID');\r",
+							"    pm.expect(target).to.have.property('like');\r",
+							"    pm.expect(target).to.have.property('created');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Данные в ответе должны соответствовать созданному лайку\", function () {\r",
+							"    var target = pm.response.json();\r",
+							"\r",
+							"    pm.expect(target.id).to.eql(2);\r",
+							"    pm.expect(target.userID).to.eql(2);\r",
+							"    pm.expect(target.eventID).to.equal(1);\r",
+							"    pm.expect(target.like).to.equal(false);\r",
+							"    pm.expect(target.created).to.not.be.null;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/users/:userID/likes?eventId=1&isLike=false",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"users",
+						":userID",
+						"likes"
+					],
+					"query": [
+						{
+							"key": "eventId",
+							"value": "1"
+						},
+						{
+							"key": "isLike",
+							"value": "false"
+						}
+					],
+					"variable": [
+						{
+							"key": "userID",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Проверка полей события после добавления дизлайка",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен содержать код 200 и данные в формате JSON\", function(){\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Событие должно содержать новые поля: likes, dislikes\", function () {\r",
+							"    var target = pm.response.json();\r",
+							"\r",
+							"    pm.expect(target).to.have.property('likes');\r",
+							"    pm.expect(target).to.have.property('dislikes');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Данные в полях должны соответствовать событию и добавленному дизлайку\", function () {\r",
+							"    var target = pm.response.json();\r",
+							"\r",
+							"    pm.expect(target.id).to.eql(1);\r",
+							"    pm.expect(target.title).to.eql(\"title for first event\");\r",
+							"    pm.expect(target.likes).to.eql(0);\r",
+							"    pm.expect(target.dislikes).to.eql(1);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/events/:eventID",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"events",
+						":eventID"
+					],
+					"variable": [
+						{
+							"key": "eventID",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Проверка полей инициатора события после добавления дизлайка",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен содержать код 200 и данные в формате JSON\", function(){\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Инициатор должен содержать новые поля: likes, dislikes\", function () {\r",
+							"    var target = pm.response.json();\r",
+							"\r",
+							"    pm.expect(target).to.have.property('likes');\r",
+							"    pm.expect(target).to.have.property('dislikes');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Данные в полях должны соответствовать событию и добавленному лайку\", function () {\r",
+							"    var target = pm.response.json();\r",
+							"\r",
+							"    pm.expect(target.id).to.eql(1);\r",
+							"    pm.expect(target.email).to.eql(\"first@user.er\");\r",
+							"    pm.expect(target.likes).to.eql(0);\r",
+							"    pm.expect(target.dislikes).to.eql(1);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/admin/users/:userID",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"admin",
+						"users",
+						":userID"
+					],
+					"variable": [
+						{
+							"key": "userID",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseURL",
+			"value": "localhost:8080",
+			"type": "string"
+		}
+	]
+}

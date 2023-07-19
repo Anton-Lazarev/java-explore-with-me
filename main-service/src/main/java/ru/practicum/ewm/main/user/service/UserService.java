@@ -11,4 +11,6 @@ public interface UserService {
     UserDTO addUser(UserDTO dto);
 
     void deleteUserByID(long id);
+
+    UserWithLikesDTO getUserByID(long userID);
 }

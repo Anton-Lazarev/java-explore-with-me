@@ -2,6 +2,8 @@ INSERT INTO users(name, email)
     VALUES ('firstUser', 'first@user.er');
 INSERT INTO users(name, email)
     VALUES ('secondUser', 'second@user.er');
+INSERT INTO users(name, email)
+    VALUES ('thirdUser', 'third@user.er');
 
 INSERT INTO categories(name)
     VALUES ('main category');

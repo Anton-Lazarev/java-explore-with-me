@@ -58,6 +58,12 @@ public class AdminController {
         return userService.getPageOfUsers(ids, from, size);
     }
 
+    @GetMapping("/users/{userID}")
+    public UserWithLikesDTO findUserByID(@PathVariable long userID) {
+        log.info("EWM main service: GET to /admin/users/{}", userID);
+        return userService.getUserByID(userID);
+    }
+
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/users/{userID}")
     public void deleteUser(@PathVariable long userID) {

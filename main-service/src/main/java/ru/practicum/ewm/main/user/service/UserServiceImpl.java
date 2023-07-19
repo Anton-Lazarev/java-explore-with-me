@@ -16,7 +16,7 @@ import ru.practicum.ewm.main.user.dto.UserWithLikesDTO;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -45,6 +45,18 @@ public class UserServiceImpl implements UserService {
         }
         log.info("Got list of users with size {}", dtos.size());
         return dtos;
+    }
+
+    @Override
+    public UserWithLikesDTO getUserByID(long userID) {
+        Optional<User> user = userRepository.findById(userID);
+        if (user.isEmpty()) {
+            throw new UserNotFoundException("User with ID " + userID + " not presented");
+        }
+        log.info("Got single user with ID: {} and name: {}", user.get().getId(), user.get().getName());
+        long likes = likeRepository.countLikesByUserIdAndStatus(userID, true);
+        long dislikes = likeRepository.countLikesByUserIdAndStatus(userID, false);
+        return UserMapper.userToLikesDTO(user.get(), likes, dislikes);
     }
 
     @Override

@@ -3,6 +3,7 @@ package ru.practicum.ewm.main.event;
 import lombok.experimental.UtilityClass;
 import ru.practicum.ewm.main.category.Category;
 import ru.practicum.ewm.main.category.CategoryMapper;
+import ru.practicum.ewm.main.event.dto.CollectedEventExtraFields;
 import ru.practicum.ewm.main.event.dto.IncomeCreateEventDTO;
 import ru.practicum.ewm.main.event.dto.Location;
 import ru.practicum.ewm.main.event.dto.OutcomeEventFullDTO;
@@ -28,7 +29,7 @@ public class EventMapper {
                 .build();
     }
 
-    public OutcomeEventFullDTO eventToFullEventDTO(Event event, long confirmedRequests, long views) {
+    public OutcomeEventFullDTO eventToFullEventDTO(Event event, CollectedEventExtraFields extraFields) {
         return OutcomeEventFullDTO.builder()
                 .id(event.getId())
                 .title(event.getTitle())
@@ -41,15 +42,17 @@ public class EventMapper {
                 .paid(event.isPaid())
                 .participantLimit(event.getMembersLimit())
                 .requestModeration(event.isRequestModeration())
-                .confirmedRequests(confirmedRequests)
+                .confirmedRequests(extraFields.getRequests())
                 .createdOn(event.getCreateDate())
                 .state(event.getState().name())
                 .publishedOn(event.getPublicationDate())
-                .views(views)
+                .views(extraFields.getViews())
+                .likes(extraFields.getLikes())
+                .dislikes(extraFields.getDislikes())
                 .build();
     }
 
-    public OutcomeEventShortDTO eventToShortEventDTO(Event event, long confirmedRequests, long views) {
+    public OutcomeEventShortDTO eventToShortEventDTO(Event event, CollectedEventExtraFields extraFields) {
         return OutcomeEventShortDTO.builder()
                 .id(event.getId())
                 .title(event.getTitle())
@@ -58,8 +61,10 @@ public class EventMapper {
                 .initiator(UserMapper.userToShortDTO(event.getInitiator()))
                 .eventDate(event.getEventDate())
                 .paid(event.isPaid())
-                .confirmedRequests(confirmedRequests)
-                .views(views)
+                .confirmedRequests(extraFields.getRequests())
+                .views(extraFields.getViews())
+                .likes(extraFields.getLikes())
+                .dislikes(extraFields.getDislikes())
                 .build();
     }
 }

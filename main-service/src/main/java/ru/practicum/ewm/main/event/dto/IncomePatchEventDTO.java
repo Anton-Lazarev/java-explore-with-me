@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.practicum.ewm.main.event.dto.enums.EventStatusActions;
 
 import javax.validation.constraints.Future;
 import javax.validation.constraints.Size;

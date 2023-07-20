@@ -13,9 +13,10 @@ import ru.practicum.ewm.main.category.CategoryDTO;
 import ru.practicum.ewm.main.category.service.CategoryService;
 import ru.practicum.ewm.main.compilations.dto.OutcomeCompilationDTO;
 import ru.practicum.ewm.main.compilations.service.CompilationService;
-import ru.practicum.ewm.main.event.dto.EventSort;
 import ru.practicum.ewm.main.event.dto.OutcomeEventFullDTO;
 import ru.practicum.ewm.main.event.dto.OutcomeEventShortDTO;
+import ru.practicum.ewm.main.event.dto.SearchPublicParams;
+import ru.practicum.ewm.main.event.dto.enums.EventSort;
 import ru.practicum.ewm.main.event.service.EventService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -67,13 +68,22 @@ public class PublicController {
                                                    @RequestParam(defaultValue = "0") int from,
                                                    @RequestParam(defaultValue = "10") int size,
                                                    HttpServletRequest request) {
-        log.info("EWM main service: GET to /events/ with text: {}, categories: {}, paid: {}, rangeStart: {}, rangeEnd: {}, onlyAvailable: {}, " +
-                "sort: {}, from: {}, size: {}", text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size);
         if (rangeStart != null && rangeEnd != null) {
             DatesValidator.validate(rangeStart, rangeEnd);
         }
         PageValidator.validate(from, size);
-        List<OutcomeEventShortDTO> dtos = eventService.publicEventSearch(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size);
+        SearchPublicParams params = SearchPublicParams.builder()
+                .text(text)
+                .categoryIDs(categories)
+                .paid(paid)
+                .rangeStart(rangeStart)
+                .rangeEnd(rangeEnd)
+                .onlyAvailable(onlyAvailable)
+                .sort(sort)
+                .build();
+        log.info("EWM main service: GET to /events/ with from: {}, size: {} and params: {}", from, size, params.toString());
+
+        List<OutcomeEventShortDTO> dtos = eventService.publicEventSearch(params, from, size);
         eventStats.addHitToStatistic(request.getRequestURI(), "EWM main service", request.getRemoteAddr(),
                 LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         return dtos;

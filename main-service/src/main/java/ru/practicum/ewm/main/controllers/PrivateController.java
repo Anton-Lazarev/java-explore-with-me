@@ -3,6 +3,7 @@ package ru.practicum.ewm.main.controllers;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +18,8 @@ import ru.practicum.ewm.main.event.dto.IncomePatchEventDTO;
 import ru.practicum.ewm.main.event.dto.OutcomeEventFullDTO;
 import ru.practicum.ewm.main.event.dto.OutcomeEventShortDTO;
 import ru.practicum.ewm.main.event.service.EventService;
+import ru.practicum.ewm.main.likes.LikeDTO;
+import ru.practicum.ewm.main.likes.service.LikeService;
 import ru.practicum.ewm.main.requests.dto.ChangeStatusRequestsDTO;
 import ru.practicum.ewm.main.requests.dto.EventRequestDTO;
 import ru.practicum.ewm.main.requests.dto.OutcomeGroupedRequestsDTO;
@@ -32,6 +35,7 @@ import java.util.List;
 public class PrivateController {
     private final EventService eventService;
     private final EventRequestService requestService;
+    private final LikeService likeService;
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{userID}/events")
@@ -77,7 +81,7 @@ public class PrivateController {
         return requestService.cancelRequestByRequester(userID, requestID);
     }
 
-    @PatchMapping("{userID}/events/{eventID}/requests")
+    @PatchMapping("/{userID}/events/{eventID}/requests")
     public OutcomeGroupedRequestsDTO changeStatusesOfRequestsByInitiator(@PathVariable long userID,
                                                                          @PathVariable long eventID,
                                                                          @Valid @RequestBody ChangeStatusRequestsDTO dto) {
@@ -91,9 +95,26 @@ public class PrivateController {
         return requestService.getAllRequestsOfRequester(userID);
     }
 
-    @GetMapping("{userID}/events/{eventID}/requests")
+    @GetMapping("/{userID}/events/{eventID}/requests")
     public List<EventRequestDTO> findRequestsForEventOfUser(@PathVariable long userID, @PathVariable long eventID) {
         log.info("EWM main service: GET to /users/{}/events/{}/requests", userID, eventID);
         return requestService.getAllRequestsToEventByEventInitiator(userID, eventID);
+    }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/{userID}/likes")
+    public LikeDTO addLikeToEvent(@PathVariable long userID,
+                                  @RequestParam(name = "eventId") long eventID,
+                                  @RequestParam(defaultValue = "true") boolean isLike) {
+        log.info("EWM main service: POST to /users/{}/likes with params eventId: {}, isLike: {}", userID, eventID, isLike);
+        return likeService.addLike(userID, eventID, isLike);
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/{userID}/likes")
+    public void deleteLikeFromEvent(@PathVariable long userID,
+                                    @RequestParam(name = "eventId") long eventID) {
+        log.info("EWM main service: DELETE to /users/{}/likes with params eventId: {}", userID, eventID);
+        likeService.deleteLike(userID, eventID);
     }
 }

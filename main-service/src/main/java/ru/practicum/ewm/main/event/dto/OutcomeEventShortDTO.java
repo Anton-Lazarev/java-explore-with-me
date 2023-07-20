@@ -25,4 +25,6 @@ public class OutcomeEventShortDTO {
     private boolean paid;
     private long confirmedRequests;
     private long views;
+    private long likes;
+    private long dislikes;
 }

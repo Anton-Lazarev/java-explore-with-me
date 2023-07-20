@@ -3,6 +3,7 @@ package ru.practicum.ewm.main.user;
 import lombok.experimental.UtilityClass;
 import ru.practicum.ewm.main.user.dto.UserDTO;
 import ru.practicum.ewm.main.user.dto.UserShortDTO;
+import ru.practicum.ewm.main.user.dto.UserWithLikesDTO;
 
 @UtilityClass
 public class UserMapper {
@@ -26,6 +27,16 @@ public class UserMapper {
         return UserShortDTO.builder()
                 .id(user.getId())
                 .name(user.getName())
+                .build();
+    }
+
+    public UserWithLikesDTO userToLikesDTO(User user, long likes, long dislikes) {
+        return UserWithLikesDTO.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .likes(likes)
+                .dislikes(dislikes)
                 .build();
     }
 }

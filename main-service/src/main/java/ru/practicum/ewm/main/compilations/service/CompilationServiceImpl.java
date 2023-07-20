@@ -15,8 +15,10 @@ import ru.practicum.ewm.main.compilations.dto.OutcomeCompilationDTO;
 import ru.practicum.ewm.main.event.Event;
 import ru.practicum.ewm.main.event.EventMapper;
 import ru.practicum.ewm.main.event.EventRepository;
+import ru.practicum.ewm.main.event.dto.CollectedEventExtraFields;
 import ru.practicum.ewm.main.event.dto.OutcomeEventShortDTO;
 import ru.practicum.ewm.main.exceptions.CompilationNotFoundException;
+import ru.practicum.ewm.main.likes.LikeRepository;
 import ru.practicum.ewm.main.requests.EventRequestRepository;
 import ru.practicum.ewm.main.requests.dto.EventRequestStatus;
 
@@ -35,6 +37,7 @@ public class CompilationServiceImpl implements CompilationService {
     private final EventRepository eventRepository;
     private final CompilationRepository compilationRepository;
     private final EventRequestRepository requestRepository;
+    private final LikeRepository likeRepository;
     private final StatisticForEvents statsForEvents;
 
     @Override
@@ -120,11 +123,16 @@ public class CompilationServiceImpl implements CompilationService {
             return Collections.emptyList();
         }
         List<Long> eventIDs = events.stream().map(Event::getId).collect(Collectors.toList());
-        Map<Long, Long> stats = statsForEvents.getHitsForEvents(eventIDs);
+        Map<Long, Long> viewsByEventID = statsForEvents.getHitsForEvents(eventIDs);
+
         for (Event event : events) {
-            eventShortDTOs.add(EventMapper.eventToShortEventDTO(event,
-                    requestRepository.countAllByEventIdAndStatus(event.getId(), EventRequestStatus.CONFIRMED),
-                    stats.get(event.getId())));
+            CollectedEventExtraFields extraFields = CollectedEventExtraFields.builder().build();
+            extraFields.setViews(viewsByEventID.get(event.getId()));
+            extraFields.setRequests(requestRepository.countAllByEventIdAndStatus(event.getId(), EventRequestStatus.CONFIRMED));
+            extraFields.setLikes(likeRepository.countLikesByEventIdAndStatus(event.getId(), true));
+            extraFields.setDislikes(likeRepository.countLikesByUserIdAndStatus(event.getId(), false));
+
+            eventShortDTOs.add(EventMapper.eventToShortEventDTO(event, extraFields));
         }
         return eventShortDTOs;
     }

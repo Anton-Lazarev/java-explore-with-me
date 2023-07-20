@@ -1,12 +1,12 @@
 package ru.practicum.ewm.main.event.service;
 
-import ru.practicum.ewm.main.event.dto.EventSort;
 import ru.practicum.ewm.main.event.dto.IncomeCreateEventDTO;
 import ru.practicum.ewm.main.event.dto.IncomePatchEventDTO;
 import ru.practicum.ewm.main.event.dto.OutcomeEventFullDTO;
 import ru.practicum.ewm.main.event.dto.OutcomeEventShortDTO;
+import ru.practicum.ewm.main.event.dto.SearchAdminParams;
+import ru.practicum.ewm.main.event.dto.SearchPublicParams;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 public interface EventService {
@@ -22,13 +22,7 @@ public interface EventService {
 
     List<OutcomeEventShortDTO> getEventsOfInitiator(long userID, int from, int size);
 
-    List<OutcomeEventShortDTO> publicEventSearch(
-            String text, List<Integer> categories, boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd,
-            boolean onlyAvailable, EventSort sort, int from, int size
-    );
+    List<OutcomeEventShortDTO> publicEventSearch(SearchPublicParams params, int from, int size);
 
-    List<OutcomeEventFullDTO> adminEventSearch(
-            List<Long> users, List<String> states, List<Long> categories, LocalDateTime rangeStart,
-            LocalDateTime rangeEnd, int from, int size
-    );
+    List<OutcomeEventFullDTO> adminEventSearch(SearchAdminParams params, int from, int size);
 }

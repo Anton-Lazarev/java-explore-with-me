@@ -1,4 +1,4 @@
-package ru.practicum.ewm.main.event.dto;
+package ru.practicum.ewm.main.event.dto.enums;
 
 import java.util.Optional;
 

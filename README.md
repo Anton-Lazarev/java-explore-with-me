@@ -1,2 +1,2 @@
-# java-explore-with-me
-Template repository for ExploreWithMe project.
+Ссылка на PR для проверки:
+https://github.com/Anton-Lazarev/java-explore-with-me/pull/5

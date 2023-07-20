@@ -23,7 +23,8 @@ public class ErrorHandler {
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @ExceptionHandler({IncorrectOwnerOfEventException.class, RequestAlreadyExistException.class, MemberLimitException.class,
-            IncorrectRequesterException.class, ConflictStatusException.class, DataIntegrityViolationException.class})
+            IncorrectRequesterException.class, ConflictStatusException.class, DataIntegrityViolationException.class,
+            IncorrectUserForLikeException.class, LikeAlreadyExistException.class})
     @ResponseStatus(HttpStatus.CONFLICT)
     public ShortErrorDTO handleConflictException(Exception exception) {
         log.error("Conflict in data error: {}", exception.getMessage());

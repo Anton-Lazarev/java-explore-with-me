@@ -26,13 +26,13 @@ API specification for main service [here](/ewm-main-service-spec.json).
 DB scheme for main service [here](/assets/db-scheme.png).
 
 POSTMAN tests for main service [here](/postman/ewm-main-service.json).
-
+***
 ### Stack:
 For both services used Java 11, Spring Boot 2.7.8, Hibernate, PostgreSQL.
 
 Both modules collected in two linked docker services via [Docker](/docker-compose.yml) which contains four containers.
-
+***
 ### Short future plans:
-Add new funcionality like:
+Add new functionality like:
 * Comments to events;
 * Subscribes to another users.

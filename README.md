@@ -7,7 +7,7 @@ Additionally, for granted statistic to main service created HTTP client for simp
 
 API specification for statistic service [here](https://github.com/yandex-praktikum/java-explore-with-me/blob/main_svc/postman/ewm-stat-service.json).
 
-POSTMAN tests for statistic service [here](https://github.com/yandex-praktikum/java-explore-with-me/blob/main_svc/postman/ewm-main-service.json).
+POSTMAN tests for statistic service [here](/ewm-main-service-spec.json).
 
 ## Main service:
 Main functionality of this service:
@@ -25,7 +25,7 @@ API specification for main service [here](/ewm-main-service-spec.json).
 
 DB scheme for main service [here](/assets/db-scheme.png).
 
-POSTMAN tests for main service [here](/postman/ewm-main-service.json).
+POSTMAN tests for main service [here](https://github.com/yandex-praktikum/java-explore-with-me/blob/main_svc/postman/ewm-main-service.json).
 ***
 ### Stack:
 For both services used Java 11, Spring Boot 2.7.8, Hibernate, PostgreSQL.

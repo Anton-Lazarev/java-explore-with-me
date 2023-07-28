@@ -5,7 +5,7 @@ This is Maven multi-module project include:
 Main aim this service: collect and provide statistic of accessing to event endpoints.
 Additionally, for granted statistic to main service created HTTP client for simple cooperation between them.
 
-API specification for statistic service [here](/ewm-main-service-spec.json).
+API specification for statistic service [here](/ewm-stats-service-spec.json).
 
 POSTMAN tests for statistic service [here](https://github.com/yandex-praktikum/java-explore-with-me/blob/main_svc/postman/ewm-stat-service.json).
 

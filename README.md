@@ -11,11 +11,11 @@ POSTMAN tests for statistic service [here](https://github.com/yandex-praktikum/j
 
 ## Main service:
 Main functionality of this service:
-* Add / modify users;
-* Add / modify / delete event categories;
-* Add / modify / moderate events;
-* Add / cancel / moderate requests to participation in events from another users;
-* Add / modify / delete compilations of events.
+* Add / modify / browse users;
+* Add / modify / browse / delete event categories;
+* Add / modify / search / browse /moderate events;
+* Add / cancel / moderate / browse requests to participation in events from another users;
+* Add / modify / delete / browse compilations of events.
 
 Additional functionality:
 * Add likes / dislikes;

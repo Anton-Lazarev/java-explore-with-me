@@ -5,17 +5,17 @@ This is Maven multi-module project include:
 Main aim this service: collect and provide statistic of accessing to event endpoints.
 Additionally, for granted statistic to main service created HTTP client for simple cooperation between them.
 
-API specification for statistic service [here](https://github.com/yandex-praktikum/java-explore-with-me/blob/main_svc/postman/ewm-stat-service.json).
+API specification for statistic service [here](/ewm-main-service-spec.json).
 
-POSTMAN tests for statistic service [here](/ewm-main-service-spec.json).
+POSTMAN tests for statistic service [here](https://github.com/yandex-praktikum/java-explore-with-me/blob/main_svc/postman/ewm-stat-service.json).
 
 ## Main service:
 Main functionality of this service:
-* Add / modify users;
-* Add / modify / delete event categories;
-* Add / modify / moderate events;
-* Add / cancel / moderate requests to participation in events from another users;
-* Add / modify / delete compilations of events.
+* Add / modify / browse users;
+* Add / modify / browse / delete event categories;
+* Add / modify / search / browse /moderate events;
+* Add / cancel / moderate / browse requests to participation in events from another users;
+* Add / modify / delete / browse compilations of events.
 
 Additional functionality:
 * Add likes / dislikes;
